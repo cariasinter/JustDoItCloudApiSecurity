@@ -5,17 +5,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import teccr.justdoitcloud.interceptor.AuthenticationInterceptor;
 import teccr.justdoitcloud.interceptor.TimingInterceptor;
 
 @SpringBootApplication
 public class JustDoItCloudApplication implements WebMvcConfigurer {
 
-    private final AuthenticationInterceptor authenticationInterceptor;
     private final TimingInterceptor timingInterceptor;
 
-    public JustDoItCloudApplication(AuthenticationInterceptor authenticationInterceptor, TimingInterceptor timingInterceptor) {
-        this.authenticationInterceptor = authenticationInterceptor;
+    public JustDoItCloudApplication(TimingInterceptor timingInterceptor) {
         this.timingInterceptor = timingInterceptor;
     }
 
@@ -31,8 +28,6 @@ public class JustDoItCloudApplication implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authenticationInterceptor)
-                .addPathPatterns("/**");
 
         registry.addInterceptor(timingInterceptor)
                 .addPathPatterns("/**");
