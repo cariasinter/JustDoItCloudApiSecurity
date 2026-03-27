@@ -5,6 +5,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import teccr.justdoitcloud.data.User;
 import teccr.justdoitcloud.security.JwtUtil;
 
 import java.time.Instant;
@@ -34,15 +35,14 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(req.username(), req.password())
         );
 
-        var principal = auth.getPrincipal();
+        var user = (User) auth.getPrincipal();
         // recuperar roles desde authorities
-        @SuppressWarnings("unchecked")
         List<String> roles = auth.getAuthorities().stream()
                 .map(a -> a.getAuthority().replace("ROLE_", ""))
                 .collect(Collectors.toList());
 
-        String token = jwtUtil.generateToken(auth.getName(), roles);
-        // calcular expiry (se usa la propiedad en JwtUtil)
+        String token = jwtUtil.generateToken(String.valueOf(user.getId()), roles);
+        // incluir expiración en formato ISO 8601 para facilitar el manejo en el cliente
         var claims = jwtUtil.validateAndParse(token).getBody();
         String expIso = Instant.ofEpochMilli(claims.getExpiration().getTime())
                 .atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);

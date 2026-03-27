@@ -28,12 +28,12 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(String username, List<String> roles) {
+    public String generateToken(String userId, List<String> roles) {
         Instant now = Instant.now();
         Instant exp = now.plus(jwtExpirationMinutes, ChronoUnit.MINUTES);
 
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(userId)
                 .claim("roles", roles)
                 .setIssuedAt(Date.from(now))
                 .setExpiration(Date.from(exp))

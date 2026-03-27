@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
@@ -34,7 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 Jws<Claims> jws = jwtUtil.validateAndParse(token);
                 Claims claims = jws.getBody();
-                String username = claims.getSubject();
+                String userid = claims.getSubject();
                 Object rolesObj = claims.get("roles");
 
                 @SuppressWarnings("unchecked")
@@ -44,7 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         .map(r -> new SimpleGrantedAuthority("ROLE_" + r))
                         .collect(Collectors.toList());
 
-                var auth = new UsernamePasswordAuthenticationToken(username, null, authorities);
+                var auth = new UsernamePasswordAuthenticationToken(userid, null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(auth);
             } catch (JwtException ex) {
                 // token inválido o expirado -> no autenticamos; la cadena de filtros seguirá y devolverá 401/403 según configuración
