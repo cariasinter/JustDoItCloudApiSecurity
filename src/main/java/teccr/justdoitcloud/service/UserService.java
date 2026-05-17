@@ -27,7 +27,7 @@ public class UserService {
      * @param username the username to authenticate
      * @return Optional containing the User if found
      */
-    public Optional<User> authenticate(String username) {
+    public Optional<User> findByUserName(String username) {
         if (username == null || username.trim().isEmpty()) {
             return Optional.empty();
         }

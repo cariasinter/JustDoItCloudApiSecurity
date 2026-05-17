@@ -60,7 +60,7 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService(UserService userService) {
-        return username -> userService.authenticate(username)
+        return username -> userService.findByUserName(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 
